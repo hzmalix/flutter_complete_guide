@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'question.dart';
-import 'answer.dart';
+import 'quiz.dart';
+import 'result.dart';
 
 // void main() {
 //   runApp(const MyApp());
@@ -19,48 +19,44 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _questions = const [
+    {
+      "questionText": "What's your favorite color?",
+      "answers": ["Black", "Red", "Green", "White"],
+    },
+    {
+      "questionText": "What's your favorite animal?",
+      "answers": ["Rabbit", "Snake", "Elephant", "Lion"],
+    },
+    {
+      "questionText": "Who's your favorite instructor?",
+      "answers": ["Max", "Max", "Max", "Max"],
+    },
+  ];
+
   var _questionIndex = 0;
 
   void _answerQuestion() {
-    setState(() {
-      if (_questionIndex < 2) {
+    if (_questionIndex < _questions.length) {
+      setState(() {
         _questionIndex++;
-      }
-    });
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      {
-        "questionText": "What's your favorite color?",
-        "answers": ["Black", "Red", "Green", "White"],
-      },
-      {
-        "questionText": "What's your favorite animal?",
-        "answers": ["Rabbit", "Snake", "Elephant", "Lion"],
-      },
-      {
-        "questionText": "Who's your favorite instructor?",
-        "answers": ["Max", "Max", "Max", "Max"],
-      },
-    ];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('My First App'),
         ),
-        body: Column(
-          children: <Widget>[
-            Question(
-              questions[_questionIndex]["questionText"].toString(),
-            ),
-            ...(questions[_questionIndex]["answers"] as List<String>)
-                .map((answer) {
-              return Answer(_answerQuestion, answer);
-            }).toList(),
-          ],
-        ),
+        body: _questionIndex < _questions.length
+            ? Quiz(
+                questions: _questions,
+                questionIndex: _questionIndex,
+                onSubmit: _answerQuestion)
+            : const Result(),
       ),
     );
   }
